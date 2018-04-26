@@ -49,8 +49,55 @@ class Game extends React.Component{
             height:10,
             position:2
         }
+        var towers = [
+            {position:2,height:7,upright:false},
+            {position:5,height:10,upright:true},
+            {position:8,height:9,upright:false},
+            {position:11,height:7,upright:true},
+            {position:14,height:10,upright:false},
+            {position:17,height:9,upright:true},
+            {position:19,height:7,upright:false},
+            {position:22,height:10,upright:true},
+            {position:25,height:9,upright:false},
+            {position:28,height:7,upright:true},
+            {position:31,height:10,upright:false},
+            {position:34,height:9,upright:true},
+            {position:37,height:9,upright:false},
+            {position:39,height:9,upright:true},
+        ]
         grid[bird.height][bird.position] = 'yellow'
-        this.state = {grid:grid}
+
+        this.state = {grid:grid,bird:bird, towers:towers}
+
+        this.timerID = setInterval( () => {
+            var gridCopy = []
+            var towersCopy = this.state.towers.slice()
+            for(let i = 0; i < 20; i++){
+                gridCopy.push(new Array(40).fill('red'))
+            }
+            for(let i = 0; i < towersCopy.length; i++){
+                towersCopy[i].position--
+                if(towersCopy[i].position < 0){
+                    towersCopy[i].position = 39
+                    towersCopy[i].height = (Math.random()*7) + 3
+                }
+            }
+            for(let i = 0; i < towersCopy.length; i++){
+                for(let j = 0; j < towersCopy[i].height; j++){
+                    if(towersCopy[i].upright)
+                        gridCopy[19-j][towersCopy[i].position] = 'blue'
+                    else
+                        gridCopy[j][towersCopy[i].position] = 'blue'
+                }
+            }
+            var birdCopy = this.state.bird
+            birdCopy.height++
+            if(birdCopy.height > 19 || birdCopy.height <0){
+                birdCopy.height = 10
+            }
+            gridCopy[birdCopy.height][birdCopy.position] = 'yellow'
+            this.setState({grid:gridCopy,bird:birdCopy}) 
+        },200)        
     }
     render(){
         return (
